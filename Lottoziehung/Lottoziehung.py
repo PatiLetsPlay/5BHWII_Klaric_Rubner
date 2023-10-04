@@ -12,6 +12,8 @@ Ziehe die sechs Zahlen und gib Sie am Bildschirm aus
 """
 import random as random
 
+from matplotlib import pyplot as plt
+
 numbers = []
 drawnNumbers = {}
 for i in range(46):
@@ -20,13 +22,11 @@ for i in range(46):
 
 
 def drawNumber(listOfNumbers, howManyDraws):
-    finalNumber = []
     for i in range(howManyDraws):
         toSwap = random.randint(0, 45 - i)
         listOfNumbers[toSwap], listOfNumbers[45 - i] = listOfNumbers[45 - i], listOfNumbers[toSwap]
-        finalNumber.append(listOfNumbers[45 - i])
-    print(listOfNumbers)
-    return print("Die 5 gezogenen Nummer sind: \n" + str(finalNumber))
+    print(listOfNumbers[-6:])
+    return listOfNumbers[-6:]
 
 
 def statistic(howManyDraws):
@@ -36,9 +36,20 @@ def statistic(howManyDraws):
     return drawnNumbers
 
 
-drawNumber(numbers, 45)
-statistic(1000000)
+drawNumber(numbers, 6)
+data = statistic(1000000)
 
 print("\nAlle gezogenene Nummern: " + str(drawnNumbers))
 print("Die am häufigsten gezogene Zahl ist: " + str(max(drawnNumbers.items(), key=lambda x: x[1])))
 print("Die am seltensten gezogene Zahl ist: " + str(min(drawnNumbers.items(), key=lambda x: x[1])))
+
+names = list(data.keys())
+values = list(data.values())
+
+fig, axs = plt.subplots()
+axs.bar(names, values)
+fig.suptitle('Lottozeihungen')
+axs.set_ylabel('Anzahl der gezogenen Zahlen')
+axs.set_xlabel('Mögliche Zahlen')
+
+plt.show()
