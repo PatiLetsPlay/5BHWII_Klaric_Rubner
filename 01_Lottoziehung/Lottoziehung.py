@@ -1,5 +1,5 @@
 """
-Aufgabe Programmiere Lottoziehung als Methode:
+Aufgabe Programmiere 01_Lottoziehung als Methode:
 
 random.getrand()
 
