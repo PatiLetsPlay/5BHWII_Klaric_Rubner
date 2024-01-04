@@ -3,23 +3,26 @@ import random as rand
 import sys
 
 
-def karten_ziehen(wie_viele, counter):
-    alle_gezogenen = []
-    alle = list(range(0, 52))
-    gezogen = random.sample(alle, wie_viele)
-    for soll in gezogen:
-        farbe = soll // 13
-        zahl = soll % 13
+def karten_ziehen(wie_viele, counter, fakehand):
+    if fakehand:
+        check_hand(fakehand, counter)
+        return fakehand
+    else:
+        alle_gezogenen = []
+        alle = list(range(0, 52))
+        gezogen = random.sample(alle, wie_viele)
+        for soll in gezogen:
+            farbe = soll // 13
+            zahl = soll % 13
 
-        # print("Farbe: " + str(farbe) + " Zahl: " + str(zahl))
-        alle_gezogenen.append((farbe, zahl))
+            # print("Farbe: " + str(farbe) + " Zahl: " + str(zahl))
+            alle_gezogenen.append((farbe, zahl))
 
-    # print(str(alle_gezogenen) + "\n")
+        # print(str(alle_gezogenen) + "\n")
 
-    # print(str(alle_gezogenen) + "\n")
-
-    check_hand(alle_gezogenen, counter)
-    return
+        # print(str(alle_gezogenen) + "\n")
+        check_hand(alle_gezogenen, counter)
+        return
 
 
 def check_hand(alle_gezogen, counter):
@@ -232,7 +235,7 @@ def main():
     anzahl_ziehungen = int(sys.argv[1])
 
     for i in range(anzahl_ziehungen):
-        karten_ziehen(wie_viel, counter)
+        karten_ziehen(wie_viel, counter, [(0, 1), (1, 1), (2, 1), (3, 1), (0, 4)])
 
     for k, v in counter.items():
         prozent_v = (v / anzahl_ziehungen) * 100
