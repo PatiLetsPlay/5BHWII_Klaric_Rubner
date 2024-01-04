@@ -1,6 +1,3 @@
-from enum import Enum
-
-
 class Person:
     def __init__(self, firstname, lastname, birthdate, geschlecht):
         self.firstname = firstname
@@ -18,9 +15,4 @@ class Person:
         print("Hello my name is " + self.firstname + " " + self.lastname)
 
 
-class Geschlecht(Enum):
-    männlich = "Männlich"
-    weiblich = "Weiblich"
-    kampfhelikopter = "Kampfhelikopter"
-    divers = "Divers"
-    not_specified = "Nicht Spezifiziert"
+

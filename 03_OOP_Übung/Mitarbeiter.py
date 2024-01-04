@@ -1,6 +1,4 @@
-from Person import Geschlecht
 from Person import Person
-from enum import Enum
 
 
 class Mitarbeiter(Person):
