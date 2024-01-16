@@ -1,73 +1,151 @@
 import random
 
 
-def main():
-    print("Iher Eingabe[Stein(1), Papier(2), Schere(3), Echse(4), Spock(5)]: ")
-    userinput = input()
+def main(game_id, games_history):
+    print("Iher Eingabe [rules(1), statistik(2), spielen easy mode(3), spielen hard mode(4)]: ")
+    menu_input = input()
 
-    botinput = random.randint(1, 5)
-    print(botinput)
-
-    if (userinput.isdigit()) and (userinput >= list(items.keys())[0] or userinput <= list(items.keys())[-1]):
-        checkIfWon(userinput, botinput)
-        weiterSpielen()
+    if int(menu_input) == 1:
+        rules(game_id, games_history)
+    elif int(menu_input) == 2:
+        statistics(game_id, games_history)
+    elif int(menu_input) == 3:
+        start_game(game_id, games_history, mode="easy")
+    elif int(menu_input) == 4:
+        start_game(game_id, games_history, mode="hard")
     else:
         print("Iher Eingabe war falsch!")
-        weiterSpielen()
+        main(game_id, games_history)
 
 
-def checkIfWon(userinput, botinput):
-    # Stein
-    if (userinput == 1 and botinput == 3) or (userinput == 1 and botinput == 4):
-        print("You won")
-    elif (userinput == 1 and botinput == 3) or (userinput == 1 and botinput == 4):
-        print("You lost")
+def statistics(game_id, games_history):
+    player_wins = 0
+    bot_wins = 0
+    draws = 0
+    symbol_counts = {"Stein": 0, "Papier": 0, "Schere": 0, "Echse": 0, "Spock": 0}
+    print("Statistik:")
+    if len(games_history) == 0:
+        print("Kein Spiel gespielt")
     else:
-        print("Unentschieden")
+        for game in games_history:
+            if game["result"] == "player":
+                player_wins += 1
+            elif game["result"] == "bot":
+                bot_wins += 1
+            elif game["result"] == "draw":
+                draws += 1
 
-    # Papier
-    if (userinput == 2 and botinput == 1) or (userinput == 2 and botinput == 5):
-        print("You won")
-    elif (userinput == 2 and botinput) == 3 or (userinput == 2 and botinput == 4):
-        print("You lost")
+            print(f"Die History ist: Player: {game["player"]}, Bot: {game["bot"]}")
+
+            if game["player"] == 1 or game["bot"] == 1:
+                symbol_counts["Stein"] += 1
+            if game["player"] == 2 or game["bot"] == 2:
+                symbol_counts["Papier"] += 1
+            if game["player"] == 3 or game["bot"] == 3:
+                symbol_counts["Schere"] += 1
+            if game["player"] == 4 or game["bot"] == 4:
+                symbol_counts["Echse"] += 1
+            if game["player"] == 5 or game["bot"] == 5:
+                symbol_counts["Spock"] += 1
+
+        print(f"Es wurden {game_id} Spiele gespielt:\n"
+              f"Der Spieler hat {player_wins} mal gewonnen\n"
+              f"Der Bot hat {bot_wins} mal gewonnen\n"
+              f"Es gab {draws} mal ein untentschieden\n")
+
+        print(symbol_counts)
+
+    main(game_id, games_history)
+
+
+def start_game(game_id, games_history, mode):
+    if mode == "easy":
+        print("Iher Eingabe[Stein(1), Papier(2), Schere(3), Echse(4), Spock(5)]: ")
+        user_input = input()
+
+        bot_input = random.randint(1, 5)
+        print(bot_input)
+
+        if user_input.isdigit() and int(user_input) in items.values():
+            user_input = int(user_input)
+            result = check_if_won(user_input, bot_input)
+            weiter_spielen(result, game_id, games_history, mode="easy")
+        else:
+            print("Iher Eingabe war falsch!")
+            result = {"player": "Error", "bot": "Error", "result": "WrongInput"}
+            weiter_spielen(result, game_id, games_history, mode="easy")
+
+    if mode == "hard":
+        start_game_hard(game_id, games_history)
+
+
+def start_game_hard(game_id, games_history):
+    print("Iher Eingabe[Stein(1), Papier(2), Schere(3), Echse(4), Spock(5)]: ")
+    user_input = input()
+
+    if user_input.isdigit() and int(user_input) in items.values():
+        user_input = int(user_input)
+        bot_input = 0
+        if user_input == 1:
+            bot_input = 2
+        if user_input == 2:
+            bot_input = 3
+        if user_input == 3:
+            bot_input = 1
+        if user_input == 4:
+            bot_input = 1
+        if user_input == 5:
+            bot_input = 4
+
+        print(bot_input)
+        result = check_if_won(user_input, bot_input)
+        weiter_spielen(result, game_id, games_history, mode="hard")
     else:
-        print("Unentschieden")
+        print("Iher Eingabe war falsch!")
+        result = {"player": "Error", "bot": "Error", "result": "WrongInput"}
+        weiter_spielen(result, game_id, games_history)
 
-    # Schere
-    if (userinput == 3 and botinput == 2) or (userinput == 3 and botinput == 4):
-        print("You won")
-    elif (userinput == 3 and botinput == 1) or (userinput == 3 and botinput == 5):
-        print("You lost")
+
+def check_if_won(user_input, bot_input):
+    result = ""
+
+    if user_input == bot_input:
+        result = "draw"
+    elif (
+            (user_input == items["Schere"] and bot_input == items["Papier"]) or
+            (user_input == items["Schere"] and bot_input == items["Echse"]) or
+            (user_input == items["Papier"] and bot_input == items["Stein"]) or
+            (user_input == items["Papier"] and bot_input == items["Spock"]) or
+            (user_input == items["Stein"] and bot_input == items["Echse"]) or
+            (user_input == items["Stein"] and bot_input == items["Schere"]) or
+            (user_input == items["Echse"] and bot_input == items["Spock"]) or
+            (user_input == items["Echse"] and bot_input == items["Papier"]) or
+            (user_input == items["Spock"] and bot_input == items["Schere"]) or
+            (user_input == items["Spock"] and bot_input == items["Stein"])
+    ):
+        result = "player"
     else:
-        print("Unentschieden")
+        result = "bot"
 
-    # Echse
-    if (userinput == 4 and botinput == 2) or (userinput == 4 and botinput == 5):
-        print("You won")
-    elif (userinput == 4 and botinput == 1) or (userinput == 4 and botinput == 3):
-        print("You lost")
-    else:
-        print("Unentschieden")
-
-    # Spock
-    if (userinput == 5 and botinput == 1) or (userinput == 5 and botinput == 3):
-        print("You won")
-    elif (userinput == 5 and botinput == 2) or (userinput == 5 and botinput == 4):
-        print("You lost")
-    else:
-        print("Unentschieden")
+    return {"player": user_input, "bot": bot_input, "result": result}
 
 
-def weiterSpielen():
+def weiter_spielen(result, game_id, games_history, mode):
+    game_id += 1
+    games_history.append({"gameId": game_id, **result})
+
     print("Weiterspielen [j/n]?")
     keep_playing_input = input()
     if keep_playing_input == 'j':
-        main()
+        start_game(game_id, games_history, mode)
+    elif keep_playing_input == 'n':
+        main(game_id, games_history)
     else:
-        pass
+        print("Error")
+        main(game_id, games_history)
 
 
-def rules():
+def rules(game_id, games_history):
     print("Regeln:")
     print("Schere schneidet Papier")
     print("Schere köpft Echse")
@@ -79,9 +157,11 @@ def rules():
     print("Echse frisst Papier")
     print("Spock zertrümmert Schere")
     print("Spock verdampft Stein \n")
+    main(game_id, games_history)
 
 
 if __name__ == "__main__":
-    rules()
+    game_id = 0
+    games_history = []
     items = {"Stein": 1, "Papier": 2, "Schere": 3, "Echse": 4, "Spock": 5}
-    main()
+    main(game_id, games_history)
