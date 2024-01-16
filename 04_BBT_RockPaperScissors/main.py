@@ -37,17 +37,29 @@ def statistics(game_id, games_history):
 
             print(f"Die History ist: Player: {game["player"]}, Bot: {game["bot"]}")
 
-            if game["player"] == 1 or game["bot"] == 1:
+            # region Herr Professor bitte nicht mobben
+            if game["player"] == 1:
                 symbol_counts["Stein"] += 1
-            if game["player"] == 2 or game["bot"] == 2:
+            if game["player"] == 2:
                 symbol_counts["Papier"] += 1
-            if game["player"] == 3 or game["bot"] == 3:
+            if game["player"] == 3:
                 symbol_counts["Schere"] += 1
-            if game["player"] == 4 or game["bot"] == 4:
+            if game["player"] == 4:
                 symbol_counts["Echse"] += 1
-            if game["player"] == 5 or game["bot"] == 5:
+            if game["player"] == 5:
                 symbol_counts["Spock"] += 1
 
+            if game["bot"] == 1:
+                symbol_counts["Stein"] += 1
+            if game["bot"] == 2:
+                symbol_counts["Papier"] += 1
+            if game["bot"] == 3:
+                symbol_counts["Schere"] += 1
+            if game["bot"] == 4:
+                symbol_counts["Echse"] += 1
+            if game["bot"] == 5:
+                symbol_counts["Spock"] += 1
+            # endregion
         print(f"Es wurden {game_id} Spiele gespielt:\n"
               f"Der Spieler hat {player_wins} mal gewonnen\n"
               f"Der Bot hat {bot_wins} mal gewonnen\n"
