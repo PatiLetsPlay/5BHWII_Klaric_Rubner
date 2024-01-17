@@ -35,9 +35,10 @@ def statistics(game_id, games_history):
             elif game["result"] == "draw":
                 draws += 1
 
-            print(f"Die History ist: Player: {game["player"]}, Bot: {game["bot"]}")
+            player = game["player"]
+            bot = game["bot"]
+            print("Die History ist: Player:" + str(player) + ", Bot: " + str(bot))
 
-            # region Herr Professor bitte nicht mobben
             if game["player"] == 1:
                 symbol_counts["Stein"] += 1
             if game["player"] == 2:
@@ -59,7 +60,7 @@ def statistics(game_id, games_history):
                 symbol_counts["Echse"] += 1
             if game["bot"] == 5:
                 symbol_counts["Spock"] += 1
-            # endregion
+
         print(f"Es wurden {game_id} Spiele gespielt:\n"
               f"Der Spieler hat {player_wins} mal gewonnen\n"
               f"Der Bot hat {bot_wins} mal gewonnen\n"
@@ -67,7 +68,7 @@ def statistics(game_id, games_history):
 
         print(symbol_counts)
 
-    main(game_id, games_history)
+        main(game_id, games_history)
 
 
 def start_game(game_id, games_history, mode):
