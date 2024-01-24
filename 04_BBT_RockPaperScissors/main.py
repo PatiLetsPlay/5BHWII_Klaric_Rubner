@@ -1,8 +1,9 @@
+import json
 import random
 
 
 def main(game_id, games_history):
-    print("Iher Eingabe [rules(1), statistik(2), spielen easy mode(3), spielen hard mode(4)]: ")
+    print("Iher Eingabe [rules(1), statistik(2), spielen easy mode(3), spielen hard mode(4), save game(5): ")
     menu_input = input()
 
     if int(menu_input) == 1:
@@ -13,6 +14,8 @@ def main(game_id, games_history):
         start_game(game_id, games_history, mode="easy")
     elif int(menu_input) == 4:
         start_game(game_id, games_history, mode="hard")
+    elif int(menu_input) == 5:
+        save_game(games_history)
     else:
         print("Iher Eingabe war falsch!")
         main(game_id, games_history)
@@ -26,6 +29,7 @@ def statistics(game_id, games_history):
     print("Statistik:")
     if len(games_history) == 0:
         print("Kein Spiel gespielt")
+        main(game_id, games_history)
     else:
         for game in games_history:
             if game["result"] == "player":
@@ -48,17 +52,6 @@ def statistics(game_id, games_history):
             if game["player"] == 4:
                 symbol_counts["Echse"] += 1
             if game["player"] == 5:
-                symbol_counts["Spock"] += 1
-
-            if game["bot"] == 1:
-                symbol_counts["Stein"] += 1
-            if game["bot"] == 2:
-                symbol_counts["Papier"] += 1
-            if game["bot"] == 3:
-                symbol_counts["Schere"] += 1
-            if game["bot"] == 4:
-                symbol_counts["Echse"] += 1
-            if game["bot"] == 5:
                 symbol_counts["Spock"] += 1
 
         print(f"Es wurden {game_id} Spiele gespielt:\n"
@@ -124,6 +117,7 @@ def check_if_won(user_input, bot_input):
 
     if user_input == bot_input:
         result = "draw"
+        print("draw")
     elif (
             (user_input == items["Schere"] and bot_input == items["Papier"]) or
             (user_input == items["Schere"] and bot_input == items["Echse"]) or
@@ -137,8 +131,10 @@ def check_if_won(user_input, bot_input):
             (user_input == items["Spock"] and bot_input == items["Stein"])
     ):
         result = "player"
+        print("player won")
     else:
         result = "bot"
+        print("bot won")
 
     return {"player": user_input, "bot": bot_input, "result": result}
 
@@ -173,8 +169,29 @@ def rules(game_id, games_history):
     main(game_id, games_history)
 
 
+def save_game(game_history):
+    with open('game_history.json', 'w') as file:
+        json.dump(game_history, file)
+
+
 if __name__ == "__main__":
-    game_id = 0
-    games_history = []
+    try:
+        with open('game_history.json', 'r') as file:
+            loaded_data = json.load(file)
+
+        if loaded_data:
+            games_history = loaded_data
+            last_game_id = loaded_data[-1]['gameId']
+            print("Last Game ID:", last_game_id)
+            game_id = last_game_id
+        else:
+            games_history = []
+            game_id = 0
+
+    except (FileNotFoundError, json.JSONDecodeError):
+        games_history = []
+        game_id = 0
+        print("No game history found.")
+
     items = {"Stein": 1, "Papier": 2, "Schere": 3, "Echse": 4, "Spock": 5}
     main(game_id, games_history)

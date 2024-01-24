@@ -1,0 +1,1 @@
+[{"gameId": 1, "player": 1, "bot": 2, "result": "bot"}, {"gameId": 2, "player": 1, "bot": 5, "result": "bot"}, {"gameId": 3, "player": 1, "bot": 4, "result": "player"}, {"gameId": 4, "player": 1, "bot": 4, "result": "player"}, {"gameId": 5, "player": 1, "bot": 5, "result": "bot"}, {"gameId": 6, "player": 1, "bot": 3, "result": "player"}]
