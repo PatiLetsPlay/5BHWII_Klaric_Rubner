@@ -1,1 +1,1 @@
-[{"gameId": 1, "player": 1, "bot": 2, "result": "bot"}, {"gameId": 2, "player": 1, "bot": 5, "result": "bot"}, {"gameId": 3, "player": 1, "bot": 4, "result": "player"}, {"gameId": 4, "player": 1, "bot": 4, "result": "player"}, {"gameId": 5, "player": 1, "bot": 5, "result": "bot"}, {"gameId": 6, "player": 1, "bot": 3, "result": "player"}]
+[[1, 2, 1, "player"], [2, 4, 5, "player"], [3, 4, 4, "draw"], [4, 2, 3, "bot"], [5, 5, 4, "bot"], [6, 4, 2, "player"], [7, 2, 4, "bot"], [8, 3, 1, "bot"], [9, 1, 2, "bot"], [10, 1, 1, "draw"], [11, 4, 3, "bot"], [12, 5, 2, "bot"]]

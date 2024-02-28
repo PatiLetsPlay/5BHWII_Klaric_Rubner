@@ -1,9 +1,10 @@
 import json
 import random
+import requests
 
 
 def main(game_id, games_history):
-    print("Iher Eingabe [rules(1), statistik(2), spielen easy mode(3), spielen hard mode(4), save game(5): ")
+    print("Iher Eingabe [rules(1), statistik(2), spielen easy mode(3), spielen hard mode(4), exit(5): ")
     menu_input = input()
 
     if int(menu_input) == 1:
@@ -15,7 +16,7 @@ def main(game_id, games_history):
     elif int(menu_input) == 4:
         start_game(game_id, games_history, mode="hard")
     elif int(menu_input) == 5:
-        save_game(games_history)
+        print("End of Game")
     else:
         print("Iher Eingabe war falsch!")
         main(game_id, games_history)
@@ -32,26 +33,27 @@ def statistics(game_id, games_history):
         main(game_id, games_history)
     else:
         for game in games_history:
-            if game["result"] == "player":
+            if game[3] == "player":  # 3 = result
                 player_wins += 1
-            elif game["result"] == "bot":
+            elif game[3] == "bot":  # 3 = result
                 bot_wins += 1
-            elif game["result"] == "draw":
+            elif game[3] == "draw":  # 3 = result
                 draws += 1
 
-            player = game["player"]
-            bot = game["bot"]
+            player = game[1]  # 1 = player
+            bot = game[2]
+            # 2 = bot
             print("Die History ist: Player:" + str(player) + ", Bot: " + str(bot))
 
-            if game["player"] == 1:
+            if game[1] == 1:
                 symbol_counts["Stein"] += 1
-            if game["player"] == 2:
+            if game[1] == 2:
                 symbol_counts["Papier"] += 1
-            if game["player"] == 3:
+            if game[1] == 3:
                 symbol_counts["Schere"] += 1
-            if game["player"] == 4:
+            if game[1] == 4:
                 symbol_counts["Echse"] += 1
-            if game["player"] == 5:
+            if game[1] == 5:
                 symbol_counts["Spock"] += 1
 
         print(f"Es wurden {game_id} Spiele gespielt:\n"
@@ -74,7 +76,7 @@ def start_game(game_id, games_history, mode):
 
         if user_input.isdigit() and int(user_input) in items.values():
             user_input = int(user_input)
-            result = check_if_won(user_input, bot_input)
+            result = check_if_won(user_input, bot_input, games_history)
             weiter_spielen(result, game_id, games_history, mode="easy")
         else:
             print("Iher Eingabe war falsch!")
@@ -104,15 +106,15 @@ def start_game_hard(game_id, games_history):
             bot_input = 4
 
         print(bot_input)
-        result = check_if_won(user_input, bot_input)
+        result = check_if_won(user_input, bot_input, games_history)
         weiter_spielen(result, game_id, games_history, mode="hard")
     else:
         print("Iher Eingabe war falsch!")
-        result = {"player": "Error", "bot": "Error", "result": "WrongInput"}
+        result = ["Error", "Error", "WrongInput"]
         weiter_spielen(result, game_id, games_history)
 
 
-def check_if_won(user_input, bot_input):
+def check_if_won(user_input, bot_input, game_history):
     result = ""
 
     if user_input == bot_input:
@@ -135,14 +137,13 @@ def check_if_won(user_input, bot_input):
     else:
         result = "bot"
         print("bot won")
-
-    return {"player": user_input, "bot": bot_input, "result": result}
+    return [user_input, bot_input, result]
 
 
 def weiter_spielen(result, game_id, games_history, mode):
     game_id += 1
-    games_history.append({"gameId": game_id, **result})
-
+    games_history.append([game_id, *result])
+    save_game(games_history)
     print("Weiterspielen [j/n]?")
     keep_playing_input = input()
     if keep_playing_input == 'j':
@@ -169,19 +170,30 @@ def rules(game_id, games_history):
     main(game_id, games_history)
 
 
+def get_Serverdata_and_save():
+    server_history = requests.get("http://localhost:5000/getStats").json()
+    with open('game_history.json', 'w') as file:
+        json.dump({}, file)
+
+    with open('game_history.json', 'w') as file:
+        json.dump(server_history, file)
+
+
 def save_game(game_history):
     with open('game_history.json', 'w') as file:
         json.dump(game_history, file)
+        requests.post("http://localhost:5000/saveStats", json=game_history[-1])
 
 
 if __name__ == "__main__":
     try:
+        get_Serverdata_and_save()
         with open('game_history.json', 'r') as file:
             loaded_data = json.load(file)
 
         if loaded_data:
             games_history = loaded_data
-            last_game_id = loaded_data[-1]['gameId']
+            last_game_id = loaded_data[-1][0]
             print("Last Game ID:", last_game_id)
             game_id = last_game_id
         else:
